@@ -367,23 +367,30 @@ public class Regulation{
 				return new PasswordAuthentication(username, password);
 			}
 		  });
-		try {
- 
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("ebzhenqing@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO,
-				InternetAddress.parse(toAddress));
-			message.setSubject(subject);
-			message.setText(content);
- 
-			Transport.send(message);
-			System.out.println("Done");
- 
-		} catch (MessagingException e) {
-			Thread.sleep(30 * 1000);
-			sendMail(content,toAddress,subject);
-			throw new RuntimeException(e);
-			
+		int try_time = 0;
+		while(try_time < 2)
+		{
+			try {
+	 
+				Message message = new MimeMessage(session);
+				message.setFrom(new InternetAddress("ebzhenqing@gmail.com"));
+				message.setRecipients(Message.RecipientType.TO,
+					InternetAddress.parse(toAddress));
+				message.setSubject(subject);
+				message.setText(content);
+	 
+				Transport.send(message);
+				System.out.println("Done");
+				try_time = 2;
+	 
+			} catch (MessagingException e) {
+				System.out.println("send email failure, sleep 5 minutes");
+				Thread.sleep(5 * 60 * 1000);
+				try_time++;
+				// sendMail(content,toAddress,subject);
+				// throw new RuntimeException(e);
+				
+			}
 		}
     }
 
